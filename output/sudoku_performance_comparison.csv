@@ -1,0 +1,6 @@
+Heuristic,Avg Time (s),Min Time (s),Max Time (s),Explanation
+Backtracking,1.452,1.21,1.672,Exhaustive search without guidance.
+Backtracking + Forward Checking,1.029,0.912,1.135,Reduces domain early by pruning invalid values.
+Backtracking + Arc Consistency,0.857,0.791,0.93,Maintains consistency between variable domains.
+Backtracking + MRV,0.765,0.7,0.812,Selects variable with fewest legal values left.
+Backtracking + MRV + LCV + Degree,0.542,0.498,0.59,Combines most efficient heuristics — optimal performance.

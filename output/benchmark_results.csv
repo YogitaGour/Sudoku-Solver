@@ -1,0 +1,6 @@
+Technique,Average Time (s)
+Backtracking,0.0022
+Backtracking + Forward Checking,0.0025
+Backtracking + Arc Consistency,0.0047
+Backtracking + MRV,0.004
+Backtracking + MRV + LCV + Degree,0.0247
