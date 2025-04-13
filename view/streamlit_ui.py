@@ -37,57 +37,33 @@ def log_output(puzzle, solution, method, elapsed_time):
     st.success(f"Output saved! Puzzle and solution stored in {output_dir}/")
 
 # Function to display the Sudoku puzzle in a grid format
-def display_puzzle(grid):
+
+        
+def display_puzzle(puzzle, title="Sudoku"):
     st.write("### 🧩 Generated Sudoku Puzzle")
-    
-    # CSS for styling the grid and highlighting subgrids
-    st.markdown("""
-    <style>
-        .sudoku-table {
-            display: grid;
-            grid-template-columns: repeat(9, 1fr);
-            gap: 5px;
-        }
-        .cell {
-            width: 30px;
-            height: 30px;
-            text-align: center;
-            font-size: 18px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .highlight {
-            background-color: #f0f8ff;
-        }
-    </style>
-    """, unsafe_allow_html=True)
+    fig, ax = plt.subplots(figsize=(5, 5))
+    ax.set_xlim(0, 9)
+    ax.set_ylim(0, 9)
+    ax.axis('off')
 
-    # Create the grid layout using markdown and text input for each cell
-    with st.container():
-        for i in range(9):
-            # Using a grid to display cells
-            cols = st.columns(9)
-            for j in range(9):
-                # Determine the cell value (empty or filled)
-                value = str(grid[i][j]) if grid[i][j] != 0 else ""
-                
-                # Set a class to highlight 3x3 subgrids
-                is_highlighted = ((i // 3) + (j // 3)) % 2 == 0
-                highlight_class = "highlight" if is_highlighted else ""
+    # Draw grid lines
+    for i in range(10):
+        lw = 2 if i % 3 == 0 else 0.5
+        ax.plot([i, i], [0, 9], color="grey", linewidth=lw)
+        ax.plot([0, 9], [i, i], color="grey", linewidth=lw)
 
-                # Creating text input field inside the grid layout
-                with cols[j]:
-                    st.text_input(
-                        label="",
-                        value=value,
-                        disabled=False if grid[i][j] == 0 else True,
-                        label_visibility="collapsed",
-                        max_chars=1,
-                        help="Enter number (1-9)" if grid[i][j] == 0 else "",
-                        key=f"cell_{i}_{j}"  # Unique key for each input field
-                    )
+    # Fill numbers
+    for i in range(9):
+        for j in range(9):
+            if puzzle[i][j] != 0:
+                ax.text(j + 0.5, 8.5 - i, str(puzzle[i][j]),
+                        va='center', ha='center', fontsize=8, color="#2c3e50")
+
+    ax.set_title(title, fontsize=5)
+    st.pyplot(fig)
 
 # Function to display the solved Sudoku in grid format
+"""
 def display_solution(solution):
     st.write("### ✅ Solved Puzzle")
     # Creating a grid format for the solved puzzle
@@ -98,6 +74,31 @@ def display_solution(solution):
             if j % 3 == 2 and j != 8:
                 row += "| "
         st.text(row)
+"""
+def display_solution(puzzle,title="Solved Puzzle"):
+    st.write("### ✅ Solved Puzzle")
+    fig, ax = plt.subplots(figsize=(3.5, 3.5))  # Smaller figure size
+    ax.set_xlim(0, 9)
+    ax.set_ylim(0, 9)
+    ax.axis('off')
+
+    # Draw the grid lines
+    for i in range(10):
+        lw = 1.5 if i % 3 == 0 else 0.5
+        ax.plot([i, i], [0, 9], color="grey", linewidth=lw)
+        ax.plot([0, 9], [i, i], color="grey", linewidth=lw)
+
+    # Fill in the numbers
+    for i in range(9):
+        for j in range(9):
+            if puzzle[i][j] != 0:
+                ax.text(j + 0.5, 8.5 - i, str(puzzle[i][j]),
+                        va='center', ha='center',
+                        fontsize=8, color="#2c3e50")
+
+    ax.set_title(title, fontsize=5)
+    st.pyplot(fig)
+
 
 # Function to plot comparison graph of solving times
 def plot_comparison_graph(heuristic_times):
@@ -177,8 +178,9 @@ def main():
             }
 
         # Plot bar graph
+        st.write("### 📊 Heuristic graph")
         plot_comparison_graph({k: v["Average Time"] for k, v in heuristic_stats.items()})
-
+        
         # Display performance matrix as a table
         st.write("### 📋 Performance Matrix (in seconds)")
         st.table({
